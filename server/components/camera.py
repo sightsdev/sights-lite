@@ -45,9 +45,6 @@ class Camera:
         await asyncio.sleep(0.01)
 
 class CameraComponent:
-    def __init__(self, state: 'State'):
-        self.state = state 
-
     @staticmethod
     def list_all():
         # checks the first 10 indexes.
@@ -63,16 +60,16 @@ class CameraComponent:
             i -= 1
         return arr
 
-    async def stream(self, scope, receive, send):
+    @staticmethod
+    async def stream(scope, receive, send):
         message = await receive()
         request = Request(scope, receive)
-        id: str = request.path_params['id']
+
+        camera_id: str = request.path_params['id']
         try:
-            camera = Camera(self.state.cameras[id])
+            camera = Camera(request.app.state.cameras[camera_id])
         except:
             raise HTTPException(404)
-        
-        print(self.state.cameras)
         
         if message["type"] == "http.request":
             await send(

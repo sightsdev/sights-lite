@@ -68,23 +68,12 @@ def load_state() -> State:
         state.sensors[label].configure()
         print(f"Created sensor of type {conf['type']}")
 
-    return state     
+    return state
 
 
-state: State = load_state()
-camera_component = CameraComponent(state)
-
-routes = [
-    Mount("/camera/{id:str}", camera_component.stream),
-    #Route("/camera/list", endpoint=list_cameras),
-    #Route('/drive/', drive, methods=["POST"]),
-    #Route('/sensor/{id:str}', sensor, methods=["GET"])
-]
-
-app = FastAPI(debug=True, routes=routes)
-#app = Starlette(debug=True, routes=routes)
-app.state = state
-
+app = FastAPI(debug=True)
+app.state = load_state()
+app.mount("/camera/{id:str}", CameraComponent.stream)
 
 @app.get("/cameras/list")
 def list_cameras():
@@ -122,3 +111,16 @@ class ArmParams(BaseModel):
 @app.post("/arm/{servo_name}")
 async def drive(servo_name: str, params: ArmParams):
     app.state.Arm.increment_angle(servo_name, params.direction, params.amount)
+
+@app.get("/settings")
+async def get_settings():
+    with open("settings.toml", mode="r") as fp:
+        return fp.read()
+
+class SettingsBody(BaseModel):
+    settings: str
+@app.post("/settings")
+async def set_settings(settings: SettingsBody):
+    with open("settings.toml", mode="w") as fp:
+        fp.write(settings)
+
