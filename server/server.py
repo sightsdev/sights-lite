@@ -1,26 +1,19 @@
-from dataclasses import fields
+import asyncio
 import json
 import tomllib as toml
-import asyncio
 from fastapi import FastAPI
-from starlette.applications import Starlette
-from starlette.routing import Route, Mount
-from starlette.requests import Request
-from starlette.responses import Response
+from fastapi.middleware.cors import CORSMiddleware
 from starlette.exceptions import HTTPException
-from starlette.middleware import Middleware
-from starlette.responses import JSONResponse
 from pydantic import BaseModel
-from typing import Union
 
 from components.camera import CameraComponent, CameraParameters
 from components.drive import DummyConnection, SimpleSerialConnection
-from components.sensor import Sensor, SensorConfig
+from components.sensor import SensorConfig
 from components.state import State
+from components.arm import Arm, ArmConfig
 
 from sensors.mlx90614 import MLX90614, MLX90614Config
 from sensors.random_sensor import RandomSensor, RandomSensorConfig
-from components.arm import Arm, ArmServoConfig, ArmConfig
 
 sensorRegister = {
     "random": (RandomSensor, RandomSensorConfig),
@@ -73,29 +66,41 @@ def load_state() -> State:
 
 app = FastAPI(debug=True)
 app.state = load_state()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.mount("/camera/{id:str}", CameraComponent.stream)
 
+@app.get("/camera/")
+def list_cameras() -> list[str]:
+    return list(app.state.cameras.keys())
+
 @app.get("/cameras/list")
-def list_cameras():
-    return CameraComponent.list_all()
+def list_available_cameras() -> list[int]:
+    return CameraComponent.list_available()
 
-class MoveMotorParams(BaseModel):
-    channel: int
-    speed: int
-
-@app.post("/drive/")
-async def drive(params: MoveMotorParams):
-    app.state.drive.move_motor(channel=params.channel, speed=params.speed)
+# class MoveMotorParams(BaseModel):
+#     channel: int
+#     speed: int
+#
+# @app.post("/drive/")
+# async def drive(params: MoveMotorParams):
+#     app.state.drive.move_motor(channel=params.channel, speed=params.speed)
 
 class MoveParams(BaseModel):
     speed: list[int]
 
 @app.post("/drive/")
 async def drive(params: MoveParams):
+    print(params)
     app.state.drive.move(params.speed)
 
 @app.get("/sensor/list/")
-async def sensor():
+async def sensor_list() -> list[str]:
     return list(app.state.sensors.keys())
 
 @app.get("/sensor/{sensor_id}")
@@ -108,19 +113,24 @@ class ArmParams(BaseModel):
     direction: bool
     amount: float | None = None
 
-@app.post("/arm/{servo_name}")
-async def drive(servo_name: str, params: ArmParams):
+@app.post("/arm/servo/{servo_name}")
+async def arm_move(servo_name: str, params: ArmParams):
     app.state.Arm.increment_angle(servo_name, params.direction, params.amount)
 
+@app.post("/arm/home")
+async def arm_home():
+    app.state.Arm.home()
+
+
 @app.get("/settings")
-async def get_settings():
+async def get_settings() -> str:
     with open("settings.toml", mode="r") as fp:
         return fp.read()
 
 class SettingsBody(BaseModel):
-    settings: str
+    content: str
 @app.post("/settings")
-async def set_settings(settings: SettingsBody):
+async def set_settings(body: SettingsBody):
     with open("settings.toml", mode="w") as fp:
-        fp.write(settings)
+        fp.write(body.content)
 

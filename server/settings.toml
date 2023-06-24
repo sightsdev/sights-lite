@@ -52,7 +52,7 @@ framerate = 30
     [camera.devices]
     front = 0
     back = 4
-    ir = 2
+    #ir = 2
 
 [sensors]
     [sensors.temperature]

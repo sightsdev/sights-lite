@@ -20,11 +20,11 @@ class Camera:
         self.capture = cv2.VideoCapture(parameters.source)
         # Resolution
         if parameters.width != 0 and parameters.height != 0:
-            self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, float(parameters.width))
-            self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, float(parameters.height))
+            self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, parameters.width)
+            self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, parameters.height)
         # Framerate
         if parameters.framerate != 0:
-            self.capture.set(cv2.CAP_PROP_FPS, float(parameters.framerate))
+            self.capture.set(cv2.CAP_PROP_FPS, parameters.framerate)
         # Try open camera
         if not self.capture.isOpened():
             raise RuntimeError("Could not start video.")
@@ -42,11 +42,11 @@ class Camera:
 
         frame_bytes = cv2.imencode(".jpg", frame)[1].tobytes()
         yield frame_bytes
-        await asyncio.sleep(0.01)
+        await asyncio.sleep(0)
 
 class CameraComponent:
     @staticmethod
-    def list_all():
+    def list_available():
         # checks the first 10 indexes.
         index = 0
         arr = []
