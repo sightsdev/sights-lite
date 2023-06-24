@@ -1,7 +1,28 @@
 import logo from './logo.svg';
 import './App.css';
+import React, { useState, useEffect } from 'react';
 
 function App() {
+  const [data, setData] = useState([]);
+
+  //Get Method
+  const apiGet = () => {
+    fetch("http://localhost:8000/cameras/list")
+      .then((response) => response.json())
+      .then((json) => {
+        console.log(json);
+        setData(json);
+      });
+  };
+
+  return (
+    <div>
+      My API <br />
+      <button onClick={apiGet}>Fetch API</button>
+      <br />
+      <pre>{JSON.stringify(data, null, 2)}</pre>
+    </div>
+    );
   return (
     <div className="App">
       <header className="App-header">

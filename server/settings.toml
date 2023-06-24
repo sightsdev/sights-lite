@@ -1,0 +1,66 @@
+# Config file for Sights Lite
+
+[drive]
+enabled = false
+
+    [drive.connection]
+    port = "/dev/ttyS0"
+    baudrate = 9600
+
+    [drive.channels]
+    left = 0
+    right = 1
+
+[arm]
+enabled = false
+
+    [arm.servos.SHOULDER]
+    index = 0
+    range_min = 900
+    range_max = 2218
+    home = 180
+
+    [arm.servos.ELBOW]
+    index = 1
+    range_min = 900
+    range_max = 2355
+    home = 160
+
+    [arm.servos.WRISTUD]
+    index = 2
+    range_min = 550
+    range_max = 2370
+    home = 100
+
+    [arm.servos.WRISTLR]
+    index = 3
+    range_min = 350
+    range_max = 2450
+    home = 76
+
+    [arm.servos.CLAW]
+    index = 4
+    range_min = 350
+    range_max = 2450
+    home = 20
+
+[camera]
+width = 640
+height = 480
+framerate = 30
+
+    [camera.devices]
+    front = 0
+    back = 4
+    ir = 2
+
+[sensors]
+    [sensors.temperature]
+    type = "random"
+    enabled = true
+
+    [sensors.random]
+    type = "random"
+    enabled = true
+    minimum = 10
+    maximum = 20
