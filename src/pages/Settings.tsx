@@ -6,7 +6,7 @@ import Editor from 'react-simple-code-editor';
 import hljs from 'highlight.js';
 import ini from 'highlight.js/lib/languages/ini';
 import "highlight.js/styles/github.css";
-import {FaArrowLeft, FaBackward, FaSave} from "react-icons/fa";
+import {FaArrowLeft, FaSave} from "react-icons/fa";
 import {Button} from "../components/Button";
 import toast from "react-hot-toast";
 import {Link} from "react-router-dom";

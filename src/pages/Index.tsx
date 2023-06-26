@@ -3,11 +3,9 @@ import {AppClient} from "../api";
 import useApi from "../useApi";
 import {useHotkeys} from "react-hotkeys-hook";
 import {Loader} from "../components/Loader";
-import {SpeedIndicator} from "../components/SpeedIndicator";
 import {Key} from 'ts-key-enum';
-import {CircleGraph} from "../components/CircleGraph";
-import {PixelGridCard} from "../components/PixelGridCard";
 import {Keys} from "react-hotkeys-hook/dist/types";
+import {SelectableCard} from "../components/SelectableCard";
 
 function Index() {
     const client = new AppClient({
@@ -44,44 +42,12 @@ function Index() {
     return (
         <div className="container mx-auto mt-6">
             <div className="grid grid-cols-3 gap-4">
-                <div className="">
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                        <CircleGraph title={"CPU Temperature"}
-                                     updatePeriod={500}
-                                     suffix={"℃"}
-                                     promiseGenerator={() => client.default.sensorSensorSensorIdGet("system_info")}
-                                     valueExtractor={(json) => json["temperature"]}/>
-                        <CircleGraph title={"CPU Usage"}
-                                     updatePeriod={500}
-                                     promiseGenerator={() => client.default.sensorSensorSensorIdGet("system_info")}
-                                     valueExtractor={(json) => Math.round(json["cpu_percent"])}/>
-                    </div>
-                    <SpeedIndicator speed={speed}></SpeedIndicator>
-                </div>
-                <img className="rounded-md"
-                     src={`https://sfxrescue.com/interfacedemo/images/demo_camera/set-4/camera_${"front"}.jpg`}
-                     alt="Video stream"/>
-                <div>
-
-                       <PixelGridCard width={32} height={24} title={"Thermal Camera"} updatePeriod={500}
-                                      promiseGenerator={() => client.default.sensorSensorSensorIdGet("thermal_camera")}/>
-                        {/*<CircleGraph title={"eCO2"}*/}
-                        {/*             suffix={"ppm"}*/}
-                        {/*             promiseGenerator={() => client.default.sensorSensorSensorIdGet("gas")}*/}
-                        {/*             valueExtractor={(json) => Math.round(json["co2"])}/>*/}
-                        {/*<CircleGraph title={"TVOC"}*/}
-                        {/*             suffix={"ppb"}*/}
-                        {/*             promiseGenerator={() => client.default.sensorSensorSensorIdGet("gas")}*/}
-                        {/*             valueExtractor={(json) => Math.round(json["tvoc"])}/>*/}
-
-                </div>
-                {["back", "left", "right"].map((index: string) =>
-                        //data.map((index: string) =>
-                        <img className="rounded-md" key={index}
-                             src={`https://sfxrescue.com/interfacedemo/images/demo_camera/set-4/camera_${index}.jpg`}
-                             alt="Video stream"/>
-                    // <img src={client.request.config.BASE + "/camera/" + index} alt={"asd"}/>
-                )}
+                <SelectableCard id={1} client={client} state={{speed, cameras: data}}></SelectableCard>
+                <SelectableCard id={2} client={client} state={{speed, cameras: data}}></SelectableCard>
+                <SelectableCard id={3} client={client} state={{speed, cameras: data}}></SelectableCard>
+                <SelectableCard id={4} client={client} state={{speed, cameras: data}}></SelectableCard>
+                <SelectableCard id={5} client={client} state={{speed, cameras: data}}></SelectableCard>
+                <SelectableCard id={6} client={client} state={{speed, cameras: data}}></SelectableCard>
             </div>
         </div>
     )

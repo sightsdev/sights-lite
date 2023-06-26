@@ -75,4 +75,4 @@ framerate = 30
 
     [sensors.thermal_camera]
     type = "mlx90641"
-    enabled = true
+    enabled = false

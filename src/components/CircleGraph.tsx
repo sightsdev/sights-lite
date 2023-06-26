@@ -1,7 +1,7 @@
 import {buildStyles, CircularProgressbar} from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import colors from 'tailwindcss/colors'
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {CancelablePromise} from "../api";
 import {useInterval} from 'usehooks-ts'
 
