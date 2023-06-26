@@ -23,7 +23,7 @@ export const Nav = () => {
                 </div>
 
                 <div className="flex basis-1/3 justify-center md:order-2">
-                    <Link to={"/"}>
+                    <Link to={"/"} className={"hover:border-b"}>
                         <span className={"text-sky-800"}>SIGHTS</span> Interface
                     </Link>
                 </div>
