@@ -1,5 +1,5 @@
-import React, {useState, useRef, useCallback, useEffect} from "react";
-import {AppClient, MoveParams} from "../api";
+import React, {useState, useEffect} from "react";
+import {AppClient} from "../api";
 import useApi from "../useApi";
 import {Loader} from "../components/Loader";
 import Editor from 'react-simple-code-editor';

@@ -5,8 +5,6 @@ import asyncio
 from starlette.requests import Request
 from starlette.exceptions import HTTPException
 
-from .state import State
-
 @dataclass
 class CameraParameters:
     source: any
@@ -17,7 +15,7 @@ class CameraParameters:
 
 class Camera:
     def __init__(self, parameters: CameraParameters):
-        self.capture = cv2.VideoCapture(parameters.source)
+        self.capture = cv2.VideoCapture(parameters.source) #, cv2.CAP_OPENCV_MJPEG)
         # Resolution
         if parameters.width != 0 and parameters.height != 0:
             self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, parameters.width)

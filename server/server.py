@@ -1,4 +1,3 @@
-import asyncio
 import json
 import tomllib as toml
 from fastapi import FastAPI
@@ -14,28 +13,34 @@ from components.arm import Arm, ArmConfig
 
 from sensors.mlx90614 import MLX90614, MLX90614Config
 from sensors.random_sensor import RandomSensor, RandomSensorConfig
+from sensors.system_info import SystemInfo, SystemInfoConfig
+from sensors.sgp30 import SGP30SensorConfig, SGP30Sensor
+from sensors.mlx90641 import MLX90641, MLX90641Config
 
 sensorRegister = {
     "random": (RandomSensor, RandomSensorConfig),
-    "mlx90614": (MLX90614, MLX90614Config)
+    "mlx90614": (MLX90614, MLX90614Config),
+    "mlx90641": (MLX90641, MLX90641Config),
+    "sgp30": (SGP30Sensor, SGP30SensorConfig),
+    "system_info": (SystemInfo, SystemInfoConfig)
 }
 
 
 def load_state() -> State:
-    state: State = State()
+    new_state: State = State()
     with open("settings.toml", mode="rb") as fp:
         config = toml.load(fp)
     
     print(json.dumps(config, indent=4))
 
     if config["drive"]["enabled"]:
-        state.drive = SimpleSerialConnection(
+        new_state.drive = SimpleSerialConnection(
             port=config["drive"]["connection"]["port"],
             baudrate=config["drive"]["connection"]["baudrate"],
             channels=config["drive"]["channels"]
         )
     else:
-        state.drive = DummyConnection()
+        new_state.drive = DummyConnection()
 
     for label, index in config["camera"]["devices"].items():
         camera_config = CameraParameters(
@@ -44,9 +49,9 @@ def load_state() -> State:
             height=config["camera"]["height"], 
             framerate=config["camera"]["framerate"], 
             source=index)
-        state.cameras[label] = camera_config
+        new_state.cameras[label] = camera_config
 
-    state.arm = Arm(ArmConfig(**config["arm"]))
+    new_state.arm = Arm(ArmConfig(**config["arm"]))
 
     for label in config["sensors"]:
         # Load sensor configuration as a dict
@@ -56,12 +61,12 @@ def load_state() -> State:
         # Create the SensorConfig object containing the configuration settings for the sensor
         conf_obj: SensorConfig = sensor_config_class(**conf)
         # Create the Sensor object
-        state.sensors[label] = sensor_class(conf_obj)
+        new_state.sensors[label] = sensor_class(conf_obj)
         # Run initial configuration for the sensor
-        state.sensors[label].configure()
+        new_state.sensors[label].configure()
         print(f"Created sensor of type {conf['type']}")
 
-    return state
+    return new_state
 
 
 app = FastAPI(debug=True)
@@ -107,6 +112,7 @@ async def sensor_list() -> list[str]:
 async def sensor(sensor_id: str):
     if sensor_id not in app.state.sensors.keys():
         raise HTTPException(404, f"Sensor with ID of {sensor_id} not found")
+    print("New request for " + sensor_id)
     return app.state.sensors[sensor_id].read()
 
 class ArmParams(BaseModel):
@@ -115,11 +121,11 @@ class ArmParams(BaseModel):
 
 @app.post("/arm/servo/{servo_name}")
 async def arm_move(servo_name: str, params: ArmParams):
-    app.state.Arm.increment_angle(servo_name, params.direction, params.amount)
+    app.state.arm.increment_angle(servo_name, params.direction, params.amount)
 
 @app.post("/arm/home")
 async def arm_home():
-    app.state.Arm.home()
+    app.state.arm.home()
 
 
 @app.get("/settings")
@@ -133,4 +139,6 @@ class SettingsBody(BaseModel):
 async def set_settings(body: SettingsBody):
     with open("settings.toml", mode="w") as fp:
         fp.write(body.content)
+    app.state.drive.close()
+    app.state = load_state()
 

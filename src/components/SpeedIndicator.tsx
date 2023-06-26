@@ -2,9 +2,9 @@ import React from "react";
 
 export const SpeedIndicator = ({speed}: { speed: number }) => (
     <div>
-        <div className="bg-gray-50 rounded-md p-6 h-auto">
+        <div className="bg-gray-100 rounded-md px-6 p-4 h-auto">
             <div className="flex justify-between mb-1">
-                <span className="text-base font-medium text-emerald-800 dark:text-white">Speed</span>
+                <span className="text-base font-medium text-gray-900 dark:text-white">Speed</span>
                 {/*<span className="text-sm font-medium text-blue-700 dark:text-white">{speed}</span>*/}
             </div>
             <div className="w-full bg-gray-200 rounded-full dark:bg-gray-700 relative">

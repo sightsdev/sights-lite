@@ -55,6 +55,10 @@ framerate = 30
     #ir = 2
 
 [sensors]
+    [sensors.system_info]
+    type = "system_info"
+    enabled = true
+
     [sensors.temperature]
     type = "random"
     enabled = true
@@ -64,3 +68,11 @@ framerate = 30
     enabled = true
     minimum = 10
     maximum = 20
+
+    [sensors.gas]
+    type = "sgp30"
+    enabled = false
+
+    [sensors.thermal_camera]
+    type = "mlx90641"
+    enabled = true

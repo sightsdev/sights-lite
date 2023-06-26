@@ -11,4 +11,4 @@ class State:
     cameras: dict[str, 'CameraParameters'] = {}
     sensors: dict[str, 'Sensor'] = {}
     drive: 'Drive'
-    Arm: 'Arm'
+    arm: 'Arm'

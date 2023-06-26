@@ -1,14 +1,14 @@
 from dataclasses import dataclass
-
-#from server.components.sensor import Sensor, SensorConfig
-
 from components.sensor import Sensor, SensorConfig
+
 @dataclass
 class MLX90614Config(SensorConfig):
     address: int = 0x5A
 
 class MLX90614(Sensor):
     def configure(self):
+        if not self.config.enabled:
+            return
         # Only import SMBus when trying to use this library
         # to prevent import errors on non-i2c-enabled systems
         import mlx90614
