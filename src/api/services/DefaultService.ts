@@ -127,6 +127,42 @@ export class DefaultService {
     }
 
     /**
+     * Power
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public powerPoweroffPost(): CancelablePromise<any> {
+        return this.httpRequest.request({
+            method: 'POST',
+            url: '/poweroff',
+        });
+    }
+
+    /**
+     * Reboot
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public rebootRebootPost(): CancelablePromise<any> {
+        return this.httpRequest.request({
+            method: 'POST',
+            url: '/reboot',
+        });
+    }
+
+    /**
+     * Reload
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public reloadReloadPost(): CancelablePromise<any> {
+        return this.httpRequest.request({
+            method: 'POST',
+            url: '/reload',
+        });
+    }
+
+    /**
      * Get Settings
      * @returns string Successful Response
      * @throws ApiError

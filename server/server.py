@@ -1,4 +1,5 @@
 import json
+import os
 import shutil
 import tomllib as toml
 from fastapi import FastAPI
@@ -130,6 +131,20 @@ async def arm_move(servo_name: str, params: ArmParams):
 async def arm_home():
     app.state.arm.home()
 
+@app.post("/poweroff")
+async def power():
+    print("Powering off...")
+    #os.system('poweroff')
+
+@app.post("/reboot")
+async def reboot():
+    print("Rebooting...")
+    #os.system('reboot')
+
+@app.post("/reload")
+async def reload():
+    app.state.drive.close()
+    app.state = load_state()
 
 @app.get("/settings")
 async def get_settings() -> str:
@@ -138,11 +153,11 @@ async def get_settings() -> str:
 
 class SettingsBody(BaseModel):
     content: str
+
 @app.post("/settings")
 async def set_settings(body: SettingsBody):
     shutil.copy2('settings.toml', 'settings.toml.bak')
     with open("settings.toml", mode="w") as fp:
         fp.write(body.content)
-    app.state.drive.close()
-    app.state = load_state()
+    await reload()
 
