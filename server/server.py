@@ -1,4 +1,5 @@
 import json
+import shutil
 import tomllib as toml
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -31,7 +32,7 @@ def load_state() -> State:
     with open("settings.toml", mode="rb") as fp:
         config = toml.load(fp)
     
-    print(json.dumps(config, indent=4))
+    #print(json.dumps(config, indent=4))
 
     if config["drive"]["enabled"]:
         new_state.drive = SimpleSerialConnection(
@@ -101,7 +102,7 @@ class MoveParams(BaseModel):
 
 @app.post("/drive/")
 async def drive(params: MoveParams):
-    print(params)
+    #print(params)
     app.state.drive.move(params.speed)
 
 @app.get("/sensor/list/")
@@ -112,7 +113,7 @@ async def sensor_list() -> list[str]:
 async def sensor(sensor_id: str):
     if sensor_id not in app.state.sensors.keys():
         raise HTTPException(404, f"Sensor with ID of {sensor_id} not found")
-    print("New request for " + sensor_id)
+    #print("New request for " + sensor_id)
     return app.state.sensors[sensor_id].read()
 
 class ArmParams(BaseModel):
@@ -137,6 +138,7 @@ class SettingsBody(BaseModel):
     content: str
 @app.post("/settings")
 async def set_settings(body: SettingsBody):
+    shutil.copy2('settings.toml', 'settings.toml.bak')
     with open("settings.toml", mode="w") as fp:
         fp.write(body.content)
     app.state.drive.close()

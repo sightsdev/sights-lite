@@ -60,8 +60,8 @@ framerate = 30
     enabled = true
 
     [sensors.temperature]
-    type = "mlx90614"
-    enabled = false
+    type = "random"
+    enabled = true
 
     [sensors.random]
     type = "random"

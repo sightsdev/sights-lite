@@ -12,13 +12,13 @@ export const Nav = () => (
 
             <div className="flex basis-1/3 justify-center md:order-2">
                 <Link to={"/"}>
-                    <span className={"text-emerald-800"}>SIGHTS</span> Interface
+                    <span className={"text-sky-800"}>SIGHTS</span> Interface
                 </Link>
             </div>
 
             <div className="flex basis-1/3 justify-end md:order-3 space-x-2">
                 <Link to={"/settings"}>
-                    <Button color="text-white bg-emerald-800 hover:bg-emerald-700"><FaCog className={"mr-2"}/> Settings</Button>
+                    <Button color="text-white bg-sky-800 hover:bg-sky-700"><FaCog className={"mr-2"}/> Settings</Button>
                 </Link>
                 <Button
                     color="text-red-700 hover:text-white border border-red-800 hover:bg-red-800"><FaPowerOff/></Button>

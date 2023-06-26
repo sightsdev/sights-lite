@@ -6,9 +6,10 @@ import Editor from 'react-simple-code-editor';
 import hljs from 'highlight.js';
 import ini from 'highlight.js/lib/languages/ini';
 import "highlight.js/styles/github.css";
-import {FaSave} from "react-icons/fa";
+import {FaArrowLeft, FaBackward, FaSave} from "react-icons/fa";
 import {Button} from "../components/Button";
 import toast from "react-hot-toast";
+import {Link} from "react-router-dom";
 
 hljs.registerLanguage('ini', ini);
 
@@ -40,7 +41,7 @@ function Settings() {
 
     return (
         <div className="container mx-auto w-2/3 my-6 ">
-            <p className="text-semibold text-xl my-6">Settings Editor</p>
+            <p className="text-semibold text-xl my-6 inline-flex"><Link to={"/"} className={"rounded-md mr-2 px-2 pt-1"}><FaArrowLeft/></Link>Settings Editor</p>
             <div className="grid grid-cols-3 auto-cols-max gap-8">
                 <div className="col-span-2 bg-gray-100 rounded-lg p-6">
                     <Editor
@@ -59,7 +60,7 @@ function Settings() {
                 <div className="">
                     <div className="bg-gray-100 rounded-lg p-6 sticky top-4">
                         <Button onClick={() => saveSettings()}
-                                color="text-emerald-700 hover:text-white border border-emerald-800 hover:bg-emerald-800"><FaSave
+                                color="text-sky-700 hover:text-white border border-sky-800 hover:bg-sky-800"><FaSave
                             className="mr-2"/> Save Settings</Button>
                     </div>
                 </div>

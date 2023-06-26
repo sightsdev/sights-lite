@@ -1,39 +1,33 @@
 import 'react-circular-progressbar/dist/styles.css';
-import {useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {CancelablePromise} from "../api";
 import {useInterval} from 'usehooks-ts'
-import {PixelGrid} from "./PixelGrid"
 
-function hslToHex(h: number, s: number, l: number) {
-    l /= 100;
-    const a = s * Math.min(l, 1 - l) / 100;
-    const f = (n: number) => {
-        const k = (n + h / 30) % 12;
-        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-        return Math.round(255 * color).toString(16).padStart(2, '0');   // convert to Hex and prefix "0" if needed
-    };
-    return `#${f(0)}${f(8)}${f(4)}`;
-}
-
-function getHue(nowTemp: number) {
-    var maxHsl = 90; // maxHsl maps to max temp (here: 20deg past 360)
-    var minHsl = 0; //  minhsl maps to min temp counter clockwise
-    var maxTemp = 30;
-    var minTemp = 0;
-
-    const hslsDeg = (maxHsl - minHsl) / (maxTemp - minTemp);  //210 / 125 = 1.68 Hsl-degs to Temp-degs
-    return (360 - (((maxTemp - nowTemp) * hslsDeg) - (maxHsl - 360)));
+function hsl2rgba(h: number, s: number, l: number) {
+    let a = s * Math.min(l, 1 - l);
+    let f = (n: number, k: number = (n + h / 30) % 12) => l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return [255 * f(0), 255 * f(8), 255 * f(4), 255];
 }
 
 
-export const PixelGridCard = ({width, height, title, promiseGenerator}: {
+export const PixelGridCard = ({width, height, title, updatePeriod, tempRange, hslRange, promiseGenerator}: {
+    title: string,
     width: number,
     height: number,
-    title: string,
+    updatePeriod: number,
+    tempRange: [number, number],
+    hslRange: [number, number],
     promiseGenerator: () => CancelablePromise<any>,
 }) => {
     const [value, setValue] = useState<Array<number>>()
     const [loading, setLoading] = useState(false);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+
+    const getHue = (nowTemp: number) => {
+        const sDeg = (hslRange[1] - hslRange[0]) / (tempRange[1] - tempRange[0]);
+        return (360 - (((tempRange[1] - nowTemp) * sDeg) - (hslRange[1] - 360)));
+    }
+
     useInterval(
         () => {
             // Your custom logic here
@@ -43,31 +37,32 @@ export const PixelGridCard = ({width, height, title, promiseGenerator}: {
                 .then((val) => {
                     //console.log(val + " " + getHue(val[0]))
                     setLoading(false);
-                    setValue(val.map((s: number) => hslToHex(getHue(s), 100, 50)));
+                    setValue(val.map((s: number) => hsl2rgba(getHue(s), 1, 0.5)).flat());
                 });
         },
         // Delay in milliseconds or null to stop it
-        loading ? null : 5000,
+        loading ? null : updatePeriod,
     )
 
-    if (!value) return <div></div>
+    useEffect(() => {
+        if (canvasRef.current && value) {
+            const canvas = canvasRef.current;
+            const context = canvas.getContext('2d');
+            if (context == null) throw new Error('Could not get context');
+            context.imageSmoothingEnabled = false;
+            const imgData = new ImageData(new Uint8ClampedArray(value), width, height);
+            // Draw image data to the canvas
+            context.putImageData(imgData, 0, 0);
+        }
+    }, [value])
+
+    if (!value) return <div className={"bg-gray-200 w-full rounded-md"}></div>
 
     return (
-        <div className="bg-gray-100 px-6 py-4 rounded-md grid grid-cols-1 divide-y w-max">
-            <h5 className="text-md text-gray-900 dark:text-white mb-3 ">{title}</h5>
-            <div className={"pt-4"}>
-                <PixelGrid
-                    //data={Array(32*24).fill(0).map(Math.random)}
-                    data={value}
-                    options={{
-                        rows: height,
-                        columns: width,
-                        size: 12,
-                        padding: 0
-                    }}
-                />
-            </div>
-
-        </div>
+        // <div className="bg-gray-100 px-6 py-4 rounded-md grid grid-cols-1 divide-y">
+        //     <h5 className="text-md text-gray-900 dark:text-white mb-3 ">{title}</h5>
+        <canvas ref={canvasRef} width={width} height={height} className={"w-full rounded-md"}
+                style={{imageRendering: "pixelated"}}/>
+        // </div>
     )
 }

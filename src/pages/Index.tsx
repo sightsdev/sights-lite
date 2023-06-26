@@ -47,10 +47,12 @@ function Index() {
                 <div className="">
                     <div className="grid grid-cols-2 gap-4 mb-3">
                         <CircleGraph title={"CPU Temperature"}
+                                     updatePeriod={500}
                                      suffix={"℃"}
                                      promiseGenerator={() => client.default.sensorSensorSensorIdGet("system_info")}
                                      valueExtractor={(json) => json["temperature"]}/>
                         <CircleGraph title={"CPU Usage"}
+                                     updatePeriod={500}
                                      promiseGenerator={() => client.default.sensorSensorSensorIdGet("system_info")}
                                      valueExtractor={(json) => Math.round(json["cpu_percent"])}/>
                     </div>
@@ -60,8 +62,8 @@ function Index() {
                      src={`https://sfxrescue.com/interfacedemo/images/demo_camera/set-4/camera_${"front"}.jpg`}
                      alt="Video stream"/>
                 <div>
-                   <div className="grid grid-cols-2 gap-4 mb-3">
-                       <PixelGridCard width={32} height={24} title={"Thermal Camera"}
+
+                       <PixelGridCard width={32} height={24} title={"Thermal Camera"} updatePeriod={500}
                                       promiseGenerator={() => client.default.sensorSensorSensorIdGet("thermal_camera")}/>
                         {/*<CircleGraph title={"eCO2"}*/}
                         {/*             suffix={"ppm"}*/}
@@ -71,7 +73,7 @@ function Index() {
                         {/*             suffix={"ppb"}*/}
                         {/*             promiseGenerator={() => client.default.sensorSensorSensorIdGet("gas")}*/}
                         {/*             valueExtractor={(json) => Math.round(json["tvoc"])}/>*/}
-                    </div>
+
                 </div>
                 {["back", "left", "right"].map((index: string) =>
                         //data.map((index: string) =>

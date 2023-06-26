@@ -5,9 +5,10 @@ import {useEffect, useState} from "react";
 import {CancelablePromise} from "../api";
 import {useInterval} from 'usehooks-ts'
 
-export const CircleGraph = ({suffix="%", title, promiseGenerator, valueExtractor = (res) => res}: {
+export const CircleGraph = ({suffix="%", title, updatePeriod, promiseGenerator, valueExtractor = (res) => res}: {
     suffix?: string,
     title: string,
+    updatePeriod: number,
     promiseGenerator: () => CancelablePromise<any>,
     valueExtractor?: (json: any) => number
 }) => {
@@ -26,7 +27,7 @@ export const CircleGraph = ({suffix="%", title, promiseGenerator, valueExtractor
                 });
         },
         // Delay in milliseconds or null to stop it
-        loading ? null : 2000,
+        loading ? null : updatePeriod,
     )
 
     return (
@@ -38,7 +39,7 @@ export const CircleGraph = ({suffix="%", title, promiseGenerator, valueExtractor
                     rotation: 0,
 
                     // Whether to use rounded or flat corners on the ends - can use 'butt' or 'round'
-                    strokeLinecap: 'rounded',
+                    strokeLinecap: 'round',
 
                     // Text size
                     textSize: '16px',
@@ -47,9 +48,9 @@ export const CircleGraph = ({suffix="%", title, promiseGenerator, valueExtractor
                     pathTransitionDuration: 0.5,
 
                     // Colors
-                    pathColor: colors.emerald['800'],
-                    textColor: colors.emerald['800'],
-                    trailColor: colors.emerald['600'],
+                    pathColor: colors.sky['800'],
+                    textColor: colors.sky['800'],
+                    trailColor: colors.gray['300'],
                 })}/>
             </div>
 
