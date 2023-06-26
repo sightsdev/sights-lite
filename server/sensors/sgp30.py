@@ -22,11 +22,11 @@ class SGP30Sensor(Sensor):
     def read(self):
         if not self.config.enabled:
             return {
-                "co2": 453,
-                "tvoc": 222
+                "eCO2": random.randint(200, 400),
+                "TVOC": random.randint(300, 600)
             }
         data = self.sensor.read_measurements()
         return {
-            "co2": data[0][0],
-            "tvoc": data[0][1]
+            "eCO2": data[0][0],
+            "TVOC": data[0][1]
         }

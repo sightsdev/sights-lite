@@ -12,16 +12,18 @@ from components.sensor import SensorConfig
 from components.state import State
 from components.arm import Arm, ArmConfig
 
-from sensors.mlx90614 import MLX90614, MLX90614Config
+from sensors.mlx90614 import MLX90614Sensor, MLX90614SensorConfig
 from sensors.random_sensor import RandomSensor, RandomSensorConfig
 from sensors.system_info import SystemInfo, SystemInfoConfig
 from sensors.sgp30 import SGP30SensorConfig, SGP30Sensor
-from sensors.mlx90641 import MLX90641, MLX90641Config
+from sensors.mlx90640 import MLX90640Sensor, MLX90640SensorConfig
+from sensors.mlx90641 import MLX90641Sensor, MLX90641SensorConfig
 
 sensorRegister = {
+    "mlx90614": (MLX90614Sensor, MLX90614SensorConfig),
+    "mlx90640": (MLX90640Sensor, MLX90640SensorConfig),
+    "mlx90641": (MLX90641Sensor, MLX90641SensorConfig),
     "random": (RandomSensor, RandomSensorConfig),
-    "mlx90614": (MLX90614, MLX90614Config),
-    "mlx90641": (MLX90641, MLX90641Config),
     "sgp30": (SGP30Sensor, SGP30SensorConfig),
     "system_info": (SystemInfo, SystemInfoConfig)
 }

@@ -1,11 +1,12 @@
+import random
 from dataclasses import dataclass
 from components.sensor import Sensor, SensorConfig
 
 @dataclass
-class MLX90614Config(SensorConfig):
+class MLX90614SensorConfig(SensorConfig):
     address: int = 0x5A
 
-class MLX90614(Sensor):
+class MLX90614Sensor(Sensor):
     def configure(self):
         if not self.config.enabled:
             return
@@ -18,5 +19,7 @@ class MLX90614(Sensor):
         self.sensor = mlx90614.MLX90614(i2cbus, address=self.config.address)
 
     def read(self):
+        if not self.config.enabled:
+            return random.randint(18, 24)
         # Get data and round to 1 dp
         return round(self.sensor.get_object_1(), 2)
