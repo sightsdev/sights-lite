@@ -38,7 +38,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "test:ts": "tsc --noEmit",
-    "generate-client": "openapi --input openapi.json --output ./src/api --client axios --name AppClient"
+    "generate-client": "openapi --input http://127.0.0.1:8000/api/openapi.json --output ./src/api --client axios --name AppClient"
   },
   "eslintConfig": {
     "extends": [

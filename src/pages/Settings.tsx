@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import {AppClient} from "../api";
+import {AppClient, OpenAPI} from "../api";
 import useApi from "../useApi";
 import {Loader} from "../components/Loader";
 import Editor from 'react-simple-code-editor';
@@ -14,9 +14,7 @@ import {Link} from "react-router-dom";
 hljs.registerLanguage('ini', ini);
 
 function Settings() {
-    const client = new AppClient({
-        BASE: 'http://localhost:8000',
-    });
+    const client = new AppClient(OpenAPI);
     const {loading, data} = useApi(client.default.getSettingsSettingsGet());
 
     const [code, setCode] = useState('function test() {}\nconsole.log("hello");');

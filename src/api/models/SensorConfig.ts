@@ -2,7 +2,8 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type MoveParams = {
-    speed: Array<number>;
+export type SensorConfig = {
+    enabled: boolean;
+    type: string;
 };
 

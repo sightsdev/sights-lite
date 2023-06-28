@@ -1,9 +1,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { ArmParams } from '../models/ArmParams';
-import type { MoveParams } from '../models/MoveParams';
-import type { SettingsBody } from '../models/SettingsBody';
+import type { MoveArmServoParams } from '../models/MoveArmServoParams';
+import type { MoveMotorsParams } from '../models/MoveMotorsParams';
+import type { PostSettingsBody } from '../models/PostSettingsBody';
+import type { SensorConfig } from '../models/SensorConfig';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
@@ -29,10 +30,10 @@ export class DefaultService {
      * @returns number Successful Response
      * @throws ApiError
      */
-    public listAvailableCamerasCamerasListGet(): CancelablePromise<Array<number>> {
+    public listAvailableCamerasCameraAllGet(): CancelablePromise<Array<number>> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/cameras/list',
+            url: '/camera/all',
         });
     }
 
@@ -43,7 +44,7 @@ export class DefaultService {
      * @throws ApiError
      */
     public driveDrivePost(
-        requestBody: MoveParams,
+        requestBody: MoveMotorsParams,
     ): CancelablePromise<any> {
         return this.httpRequest.request({
             method: 'POST',
@@ -58,10 +59,10 @@ export class DefaultService {
 
     /**
      * Sensor List
-     * @returns string Successful Response
+     * @returns SensorConfig Successful Response
      * @throws ApiError
      */
-    public sensorListSensorListGet(): CancelablePromise<Array<string>> {
+    public sensorListSensorListGet(): CancelablePromise<Record<string, SensorConfig>> {
         return this.httpRequest.request({
             method: 'GET',
             url: '/sensor/list/',
@@ -98,7 +99,7 @@ export class DefaultService {
      */
     public armMoveArmServoServoNamePost(
         servoName: string,
-        requestBody: ArmParams,
+        requestBody: MoveArmServoParams,
     ): CancelablePromise<any> {
         return this.httpRequest.request({
             method: 'POST',
@@ -181,7 +182,7 @@ export class DefaultService {
      * @throws ApiError
      */
     public setSettingsSettingsPost(
-        requestBody: SettingsBody,
+        requestBody: PostSettingsBody,
     ): CancelablePromise<any> {
         return this.httpRequest.request({
             method: 'POST',

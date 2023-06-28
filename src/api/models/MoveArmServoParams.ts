@@ -2,7 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type ArmParams = {
+export type MoveArmServoParams = {
     direction: boolean;
     amount?: number;
 };

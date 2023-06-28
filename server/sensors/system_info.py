@@ -4,7 +4,6 @@ import psutil
 
 from components.sensor import Sensor, SensorConfig
 
-@dataclass
 class SystemInfoConfig(SensorConfig):
     pass
 

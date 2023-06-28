@@ -6,7 +6,16 @@ import reportWebVitals from './reportWebVitals';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Index from "./pages/Index";
 import Settings from "./pages/Settings";
+import {OpenAPI} from "./api";
 
+
+if (process.env.NODE_ENV === 'development') {
+    OpenAPI.BASE = 'http://localhost:8000/api';
+}
+if (process.env.NODE_ENV === 'production') {
+    OpenAPI.BASE = '/api';
+}
+console.log(OpenAPI.BASE);
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
 );

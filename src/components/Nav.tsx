@@ -11,9 +11,7 @@ function classNames(...classes: string[]) {
 }
 
 export const Nav = () => {
-    const client = new AppClient({
-        BASE: 'http://localhost:8000',
-    });
+    const client = new AppClient();
     return (
         <nav className="border-gray-200 bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
             <div className="container flex flex-wrap items-center justify-between mx-auto p-4 relative">

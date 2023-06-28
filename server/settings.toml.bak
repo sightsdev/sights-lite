@@ -48,11 +48,12 @@ enabled = false
 width = 640
 height = 480
 framerate = 30
+quality = 80
 
     [camera.devices]
     front = 0
     back = 4
-    #ir = 2
+    ir = 2
 
 [sensors]
     [sensors.system_info]
@@ -71,8 +72,16 @@ framerate = 30
 
     [sensors.gas]
     type = "sgp30"
-    enabled = false
+    enabled = true
+    mock = true
+    
+    [sensors.gas2]
+    type = "sgp30"
+    enabled = true
+    mock = true
 
     [sensors.thermal_camera]
-    type = "mlx90641"
+    type = "mlx90640"
     enabled = true
+    interpolate = true
+    mock = true

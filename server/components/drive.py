@@ -4,6 +4,8 @@ import logging
 
 from dataclasses import dataclass
 
+logger = logging.getLogger(__name__)
+
 class Drive:
     def move_motor(self, channel, speed):
         pass
@@ -19,27 +21,27 @@ class Drive:
 
 class DummyConnection(Drive):
     def __init__(self):
-        print("Created")
+        logger.info("Created dummy connection...")
 
     def move_motor(self, channel: str, speed: int):
-        print(f"Moving channel {channel} at speed {speed}")
+        logger.info(f"Moving channel {channel} at speed {speed}")
 
     def move(self, speed: list[int]):
-        print(f"Moving both at speeds {speed}")
+        logger.info(f"Moving both at speeds {speed}")
 
     def stop(self):
-        print("Stopping")
+        logger.info("Stopping...")
 
     def close(self):
-        print("Closing")
+        logger.info("Closing...")
 
 class SimpleSerialConnection(Drive):
     def __init__(self, port: str, baudrate: int, channels):
-        #import serial
+        import serial
         self.port = port
         self.baudrate = baudrate
         self.channels = channels
-        #self.serial = serial.Serial(port=self.port, baudrate=self.baudrate)
+        self.serial = serial.Serial(port=self.port, baudrate=self.baudrate)
 
     def move_motor(self, channel: int, speed: int):
         # Left channel

@@ -15,6 +15,7 @@ module.exports = {
         {
             pattern: /grid-cols-([12345678])/, // Need for runtime padding on tree menu items
         }
-    ]
+    ],
+    darkMode: 'class',
 }
 

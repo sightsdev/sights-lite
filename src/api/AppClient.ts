@@ -16,8 +16,9 @@ export class AppClient {
     public readonly request: BaseHttpRequest;
 
     constructor(config?: Partial<OpenAPIConfig>, HttpRequest: HttpRequestConstructor = AxiosHttpRequest) {
+        console.log(config?.BASE)
         this.request = new HttpRequest({
-            BASE: config?.BASE ?? '',
+            BASE: config?.BASE ?? '/api',
             VERSION: config?.VERSION ?? '0.1.0',
             WITH_CREDENTIALS: config?.WITH_CREDENTIALS ?? false,
             CREDENTIALS: config?.CREDENTIALS ?? 'include',

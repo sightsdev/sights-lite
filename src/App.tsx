@@ -8,7 +8,7 @@ function App() {
         <div className="App h-auto dark:bg-gray-700">
             <Nav/>
             <Outlet/>
-            <Toaster />
+            <Toaster position={'top-right'} />
         </div>)
 }
 

@@ -2,19 +2,22 @@ from dataclasses import dataclass
 import cv2
 import asyncio
 
+import simplejpeg as simplejpeg
+from pydantic import BaseModel
 from starlette.requests import Request
 from starlette.exceptions import HTTPException
 
-@dataclass
-class CameraParameters:
-    source: any
+class CameraParameters(BaseModel):
+    source: int | str
     id: str
     framerate: int
     width: int 
     height: int
+    quality: int
 
 class Camera:
     def __init__(self, parameters: CameraParameters):
+        self.parameters = parameters
         self.capture = cv2.VideoCapture(parameters.source) #, cv2.CAP_OPENCV_MJPEG)
         # Resolution
         if parameters.width != 0 and parameters.height != 0:
@@ -26,19 +29,18 @@ class Camera:
         # Try open camera
         if not self.capture.isOpened():
             raise RuntimeError("Could not start video.")
-        #self.frame_total = int(self.capture.get(cv2.CAP_PROP_FRAME_COUNT))
 
     async def frames(self):
-        #frame_count = 0
-        #self.capture = cv2.VideoCapture(self.video_source)
-        #for frame_count in range(self.frame_total):
-        #while frame_count != frame_total:
-        #    if frame_count == frame_total:
-        #        frame_count = 0
         ret, frame = self.capture.read()
-            #frame_count += 1
-
-        frame_bytes = cv2.imencode(".jpg", frame)[1].tobytes()
+        #frame_bytes = cv2.imencode(".jpg", frame)[1].tobytes()
+        # Using simplejpeg should be much more performant than OpenCV for compressing JPGs
+        frame_bytes = simplejpeg.encode_jpeg(
+            frame,
+            quality=self.parameters.quality,
+            colorspace="BGR",
+            colorsubsampling="422",
+            fastdct=True,
+        )
         yield frame_bytes
         await asyncio.sleep(0)
 

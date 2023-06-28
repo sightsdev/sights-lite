@@ -3,13 +3,12 @@ import random
 
 from components.sensor import Sensor, SensorConfig
 
-@dataclass
 class SGP30SensorConfig(SensorConfig):
-    pass
+    mock: bool = False
 
 class SGP30Sensor(Sensor):
     def configure(self):
-        if not self.config.enabled:
+        if self.config.mock:
             return
         from sgp30 import SGP30
         from smbus2 import SMBus
@@ -20,7 +19,7 @@ class SGP30Sensor(Sensor):
         self.sensor.init_sgp()
 
     def read(self):
-        if not self.config.enabled:
+        if self.config.mock:
             return {
                 "eCO2": random.randint(200, 400),
                 "TVOC": random.randint(300, 600)

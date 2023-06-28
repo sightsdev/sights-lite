@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {AppClient} from "../api";
+import {AppClient, OpenAPI} from "../api";
 import useApi from "../useApi";
 import {useHotkeys} from "react-hotkeys-hook";
 import {Loader} from "../components/Loader";
@@ -8,10 +8,9 @@ import {Keys} from "react-hotkeys-hook/dist/types";
 import {SelectableCard} from "../components/SelectableCard";
 
 function Index() {
-    const client = new AppClient({
-        BASE: 'http://localhost:8000',
-    });
-    const {loading, data} = useApi(client.default.listCamerasCameraGet());
+    const client = new AppClient(OpenAPI);
+    const cameras = useApi(client.default.listCamerasCameraGet());
+    const sensors = useApi(client.default.sensorListSensorListGet());
     const [speed, setSpeed] = useState<number>(3);
 
     const useDriveHotkey = (key: Keys, left: number, right: number) => {
@@ -37,17 +36,23 @@ function Index() {
     useHotkeys(Key.Subtract, () => client.default.armMoveArmServoServoNamePost("CLAW", {direction: false}));
     useHotkeys('num0', () => client.default.armHomeArmHomePost());
 
-    if (loading || !data) return <Loader/>
+    if (cameras.loading || sensors.loading || !cameras.data || !sensors.data) return <Loader/>
+
+    let state = {
+        speed,
+        cameras: cameras.data,
+        sensors: sensors.data
+    }
 
     return (
         <div className="container mx-auto mt-6">
             <div className="grid grid-cols-3 gap-4">
-                <SelectableCard id={1} client={client} state={{speed, cameras: data}}></SelectableCard>
-                <SelectableCard id={2} client={client} state={{speed, cameras: data}}></SelectableCard>
-                <SelectableCard id={3} client={client} state={{speed, cameras: data}}></SelectableCard>
-                <SelectableCard id={4} client={client} state={{speed, cameras: data}}></SelectableCard>
-                <SelectableCard id={5} client={client} state={{speed, cameras: data}}></SelectableCard>
-                <SelectableCard id={6} client={client} state={{speed, cameras: data}}></SelectableCard>
+                <SelectableCard id={1} client={client} state={state}></SelectableCard>
+                <SelectableCard id={2} client={client} state={state}></SelectableCard>
+                <SelectableCard id={3} client={client} state={state}></SelectableCard>
+                <SelectableCard id={4} client={client} state={state}></SelectableCard>
+                <SelectableCard id={5} client={client} state={state}></SelectableCard>
+                <SelectableCard id={6} client={client} state={state}></SelectableCard>
             </div>
         </div>
     )

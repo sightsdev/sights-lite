@@ -7,7 +7,7 @@ import {LineGraphCard} from "./LineGraphCard";
 import {FaCamera, FaChevronDown, FaChevronRight, FaInfo, FaTimes} from "react-icons/fa";
 import {SlGraph} from "react-icons/sl";
 import {FaTemperatureEmpty} from "react-icons/fa6";
-import {AppClient} from "../api";
+import {AppClient, SensorConfig} from "../api";
 
 interface Option {
     name: string,
@@ -17,7 +17,8 @@ interface Option {
 
 interface State {
     speed: number,
-    cameras: string[]
+    cameras: string[],
+    sensors: Record<string, SensorConfig>
 }
 
 function classNames(...classes: string[]) {
@@ -32,59 +33,72 @@ export const SelectableCard = ({id, state, client}: { id: number, state: State, 
                 Icon: <FaTimes/>,
                 Component: <div/>
             },
-            {
-                name: 'System Info + Speed',
-                Icon: <FaInfo/>,
-                Component: <div>
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                        <CircleGraph title={"CPU Temperature"}
-                                     updatePeriod={500}
-                                     suffix={"℃"}
-                                     promiseGenerator={() => client.default.sensorSensorSensorIdGet("system_info")}
-                                     valueExtractor={(json) => json["temperature"]}/>
-                        <CircleGraph title={"CPU Usage"}
-                                     updatePeriod={500}
-                                     promiseGenerator={() => client.default.sensorSensorSensorIdGet("system_info")}
-                                     valueExtractor={(json) => Math.round(json["cpu_percent"])}/>
-                    </div>
-                    <SpeedIndicator speed={state.speed}></SpeedIndicator>
-                </div>
-            },
-            {
-                name: 'Gas (eCO2 / TVOC)',
-                Icon: <SlGraph/>,
-                Component: <LineGraphCard title={"Gas"}
-                                          updatePeriod={500}
-                                          length={20}
-                                          series={["eCO2", "TVOC"]}
-                                          promiseGenerator={() => client.default.sensorSensorSensorIdGet("gas")}/>
-            },
-            {
-                name: 'Thermal Camera',
-                Icon: <FaTemperatureEmpty/>,
-                Component: <PixelGridCard title={"Thermal Camera"}
-                                          width={32} height={24}
-                                          tempRange={[0, 30]}
-                                          hslRange={[0, 90]}
-                                          updatePeriod={500}
-                                          promiseGenerator={() => client.default.sensorSensorSensorIdGet("thermal_camera")}/>
-            },
         ];
+        for (const sensorName in state.sensors) {
+            let value: SensorConfig = state.sensors[sensorName];
+            if (!value.enabled) continue;
+            switch(value.type) {
+                case "system_info":
+                    options.push({
+                        name: 'System Info + Speed',
+                        Icon: <FaInfo/>,
+                        Component: <div>
+                            <div className="grid grid-cols-2 gap-4 mb-3">
+                                <CircleGraph title={"CPU Temperature"}
+                                             updatePeriod={500}
+                                             suffix={"℃"}
+                                             promiseGenerator={() => client.default.sensorSensorSensorIdGet(sensorName)}
+                                             valueExtractor={(json) => json["temperature"]}/>
+                                <CircleGraph title={"CPU Usage"}
+                                             updatePeriod={500}
+                                             promiseGenerator={() => client.default.sensorSensorSensorIdGet(sensorName)}
+                                             valueExtractor={(json) => Math.round(json["cpu_percent"])}/>
+                            </div>
+                            <SpeedIndicator speed={state.speed}></SpeedIndicator>
+                        </div>
+                    });
+                    break;
+                case "mlx90641":
+                case "mlx90640":
+                    options.push({
+                        name: `Thermal Camera (${sensorName})`,
+                        Icon: <FaTemperatureEmpty/>,
+                        Component: <PixelGridCard title={`Thermal Camera`}
+                                                  width={64} height={48}
+                                                  tempRange={[0, 30]}
+                                                  hslRange={[0, 90]}
+                                                  updatePeriod={500}
+                                                  promiseGenerator={() => client.default.sensorSensorSensorIdGet(sensorName)}/>
+                    });
+                    break;
+                case "sgp30":
+                    options.push({
+                        name: `Gas (eCO2 / TVOC) (${sensorName})`,
+                        Icon: <SlGraph/>,
+                        Component: <LineGraphCard title={`Gas`}
+                                                  updatePeriod={500}
+                                                  length={20}
+                                                  series={["eCO2", "TVOC"]}
+                                                  promiseGenerator={() => client.default.sensorSensorSensorIdGet(sensorName)}/>
+                    });
+                    break;
+            }
+        }
         state.cameras.forEach((c: string, i: number) => {
             options.push(
                 {
                     name: `Camera (${c})`,
                     Icon: <FaCamera/>,
                     Component: <img className="rounded-md"
-                                    src={`http://localhost:8000/camera/${c}`}
+                                    src={`${client.request.config.BASE}/camera/${c}/`}
                                     alt="Video stream"/>
                 },
             )
         })
         return options
-    }, [client, state])
+    }, [state])
 
-    const [selectedComponent, setSelectedComponent] = useState<number | null>(null)
+    const [selectedComponent, setSelectedComponent] = useState<string | null>(null)
     useEffect(() => {
         const selected = localStorage.getItem(`selectedComponent${id}`);
         if (selected) {
@@ -92,13 +106,23 @@ export const SelectableCard = ({id, state, client}: { id: number, state: State, 
         }
     }, []);
     if (selectedComponent != null) {
-        return <>{getOptions[selectedComponent].Component}</>
+        // Check if option in localstorage exists in the current options
+        const opt = getOptions.find(o => o.name == selectedComponent);
+        if (opt) {
+            return <>{opt.Component}</>
+        } else {
+            // If not, remove the localstorage key (the sensor was likely removed from the config)
+            localStorage.removeItem(`selectedComponent${id}`);
+            // And reshow the selection box
+            setSelectedComponent(null);
+        }
+
     }
     return (
         <div className={"bg-gray-100 rounded-md px-4 py-2 pb-4"}>
             <Listbox value={null} onChange={(selected: number) => {
-                localStorage.setItem(`selectedComponent${id}`, JSON.stringify(selected));
-                setSelectedComponent(selected)
+                localStorage.setItem(`selectedComponent${id}`, JSON.stringify(getOptions[selected].name));
+                setSelectedComponent(getOptions[selected].name)
             }}>
                 {({open}) => (
                     <>

@@ -9,10 +9,11 @@ export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
-export type { ArmParams } from './models/ArmParams';
 export type { HTTPValidationError } from './models/HTTPValidationError';
-export type { MoveParams } from './models/MoveParams';
-export type { SettingsBody } from './models/SettingsBody';
+export type { MoveArmServoParams } from './models/MoveArmServoParams';
+export type { MoveMotorsParams } from './models/MoveMotorsParams';
+export type { PostSettingsBody } from './models/PostSettingsBody';
+export type { SensorConfig } from './models/SensorConfig';
 export type { ValidationError } from './models/ValidationError';
 
 export { DefaultService } from './services/DefaultService';
