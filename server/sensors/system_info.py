@@ -27,6 +27,8 @@ class SystemInfo(Sensor):
         # Raspberry Pi
         elif 'cpu-thermal' in temp_data:
             temperature = round(temp_data['cpu-thermal'][0].current, 1)
+        elif 'cpu_thermal' in temp_data:
+            temperature = round(temp_data['cpu_thermal'][0].current, 1)
         return {
             "cpu_percent": psutil.cpu_percent(),
             "memory": psutil.virtual_memory().percent,
