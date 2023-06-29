@@ -15,12 +15,12 @@ function Index() {
 
     const useDriveHotkey = (key: Keys, left: number, right: number) => {
         useHotkeys(key, () => client.default.driveDrivePost({speed: [speed * left, speed * right]}))
-        useHotkeys(key, () => client.default.driveDrivePost({speed: [0, 0]}), {keydown: false, keyup: true});
+        useHotkeys(key, () => client.default.driveStopDriveStopPost(), {keydown: false, keyup: true});
     }
-    useDriveHotkey(['w', Key.ArrowUp], 10, 10)
-    useDriveHotkey(['a', Key.ArrowLeft], -10, 10)
-    useDriveHotkey(['s', Key.ArrowDown], -10, -10)
-    useDriveHotkey(['d', Key.ArrowRight], 10, -10)
+    useDriveHotkey(['w', Key.ArrowUp], 125, 125)
+    useDriveHotkey(['a', Key.ArrowLeft], -125, 125)
+    useDriveHotkey(['s', Key.ArrowDown], -125, -125)
+    useDriveHotkey(['d', Key.ArrowRight], 125, -125)
     useHotkeys('=', () => setSpeed(prev => Math.min(8, prev + 1)))
     useHotkeys('-', () => setSpeed(prev => Math.max(1, prev - 1)))
 

@@ -126,6 +126,10 @@ class MoveMotorsParams(BaseModel):
 async def drive(params: MoveMotorsParams):
     app.state.drive.move(params.speed)
 
+@api.post("/drive/stop")
+async def drive_stop():
+    app.state.drive.stop()
+
 @api.get("/sensor/list/")
 async def sensor_list() -> dict[str, SensorConfig]:
     return {k: s.config for (k, s) in app.state.sensors.items()}

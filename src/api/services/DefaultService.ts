@@ -58,6 +58,18 @@ export class DefaultService {
     }
 
     /**
+     * Drive Stop
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public driveStopDriveStopPost(): CancelablePromise<any> {
+        return this.httpRequest.request({
+            method: 'POST',
+            url: '/drive/stop',
+        });
+    }
+
+    /**
      * Sensor List
      * @returns SensorConfig Successful Response
      * @throws ApiError
