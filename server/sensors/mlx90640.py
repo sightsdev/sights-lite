@@ -1,5 +1,4 @@
 import numpy as np
-import skimage
 
 from components.sensor import Sensor, SensorConfig
 
@@ -18,6 +17,8 @@ class MLX90640Sensor(Sensor):
     def configure(self):
         if self.config.mock:
             return
+        if self.config.interpolate:
+            import skimage
         import seeed_mlx9064x
         # Additional config option for i2c address, default to 0x33
         self.address = self.config.address
