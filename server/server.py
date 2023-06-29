@@ -1,8 +1,10 @@
 import json
 import logging
 import shutil
-import tomllib as toml
-
+try:
+    import tomllib as toml
+except ModuleNotFoundError:
+    import tomli as toml
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 from fastapi import FastAPI
