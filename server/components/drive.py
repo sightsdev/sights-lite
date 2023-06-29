@@ -46,13 +46,13 @@ class SimpleSerialConnection(Drive):
     def move_motor(self, channel: int, speed: int):
         # Left channel
         if channel == 0:
-            offset = 64 if speed > 0 else 0
+            offset = 64 #if speed > 0 else 0
             channel = self.channels.get('left') * 128
             msg = offset + channel + abs(round(62 / 1000 * speed))
             self.serial.write(bytes([msg]))
         # Right channel, note the intentional use of elif, since we want to ignore channels > 1
         elif channel == 1:
-            offset = 64 if speed > 0 else 0
+            offset = 64 #if speed > 0 else 0
             channel = self.channels.get('right') * 128
             msg = offset + channel + abs(round(62 / 1000 * speed))
             self.serial.write(bytes([msg]))
@@ -60,15 +60,15 @@ class SimpleSerialConnection(Drive):
     def move(self, speed: list[int]):
         # Left side
         if speed[0] is not None:
-            offset = 64 if speed[0] > 0 else 0
+            offset = 64 #if speed[0] > 0 else 0
             channel = self.channels.get('left') * 128
-            msg = offset + channel + abs(round(62 / 1000 * speed[0]))
+            msg = offset + channel + (round(62 / 1000 * speed[0]))
             self.serial.write(bytes([msg]))
         # Right side
         if speed[1] is not None:
-            offset = 64 if speed[1] > 0 else 0
+            offset = 64 #if speed[1] > 0 else 0
             channel = self.channels.get('right') * 128
-            msg = offset + channel + abs(round(62 / 1000 * speed[1]))
+            msg = offset + channel + (round(62 / 1000 * speed[1]))
             self.serial.write(bytes([msg]))
 
     def stop(self):
