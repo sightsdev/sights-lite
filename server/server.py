@@ -1,6 +1,8 @@
 import json
 import logging
 import shutil
+from typing import Optional
+
 try:
     import tomllib as toml
 except ModuleNotFoundError:
@@ -137,7 +139,7 @@ async def sensor(sensor_id: str):
 
 class MoveArmServoParams(BaseModel):
     direction: bool
-    amount: float | None = None
+    amount: Optional[float] = None
 
 @api.post("/arm/servo/{servo_name}")
 async def arm_move(servo_name: str, params: MoveArmServoParams):

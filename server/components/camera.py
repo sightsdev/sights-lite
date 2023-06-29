@@ -1,14 +1,14 @@
 from dataclasses import dataclass
 import cv2
 import asyncio
-
+from typing import Union
 import simplejpeg as simplejpeg
 from pydantic import BaseModel
 from starlette.requests import Request
 from starlette.exceptions import HTTPException
 
 class CameraParameters(BaseModel):
-    source: int | str
+    source: Union[int, str]
     id: str
     framerate: int
     width: int 
