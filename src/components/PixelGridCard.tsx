@@ -22,6 +22,7 @@ export const PixelGridCard = ({width, height, title, updatePeriod, tempRange, hs
     const [value, setValue] = useState<Array<number>>()
     const [loading, setLoading] = useState(false);
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const [size, setSize] = useState({width, height})
 
     const getHue = (nowTemp: number) => {
         const sDeg = (hslRange[1] - hslRange[0]) / (tempRange[1] - tempRange[0]);
@@ -36,6 +37,9 @@ export const PixelGridCard = ({width, height, title, updatePeriod, tempRange, hs
                 .then((response) => response)
                 .then((val) => {
                     //console.log(val + " " + getHue(val[0]))
+                    if (val.length == 768) {
+                        setSize({height: 24, width: 32})
+                    }
                     setLoading(false);
                     setValue(val.map((s: number) => hsl2rgba(getHue(s), 1, 0.5)).flat());
                 });
@@ -50,7 +54,7 @@ export const PixelGridCard = ({width, height, title, updatePeriod, tempRange, hs
             const context = canvas.getContext('2d');
             if (context == null) throw new Error('Could not get context');
             context.imageSmoothingEnabled = false;
-            const imgData = new ImageData(new Uint8ClampedArray(value), width, height);
+            const imgData = new ImageData(new Uint8ClampedArray(value), size.width, size.height);
             // Draw image data to the canvas
             context.putImageData(imgData, 0, 0);
         }
@@ -61,7 +65,7 @@ export const PixelGridCard = ({width, height, title, updatePeriod, tempRange, hs
     return (
         // <div className="bg-gray-100 px-6 py-4 rounded-md grid grid-cols-1 divide-y">
         //     <h5 className="text-md text-gray-900 dark:text-white mb-3 ">{title}</h5>
-        <canvas ref={canvasRef} width={width} height={height} className={"w-full rounded-md"}
+        <canvas ref={canvasRef} width={size.width} height={size.height} className={"w-full rounded-md"}
                 style={{imageRendering: "pixelated"}}/>
         // </div>
     )
