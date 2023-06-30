@@ -32,9 +32,11 @@ function Index() {
     useHotkeys('num6', () => client.default.armMoveArmServoServoNamePost("WRISTUD", {direction: false}));
     useHotkeys('num7', () => client.default.armMoveArmServoServoNamePost("WRISTLR", {direction: true}));
     useHotkeys('num8', () => client.default.armMoveArmServoServoNamePost("WRISTLR", {direction: false}));
+
     useHotkeys(Key.Add, () => client.default.armMoveArmServoServoNamePost("CLAW", {direction: true}));
     useHotkeys(Key.Subtract, () => client.default.armMoveArmServoServoNamePost("CLAW", {direction: false}));
     useHotkeys('num0', () => client.default.armHomeArmHomePost());
+    useHotkeys('num.', () => client.default.armHomeArmPresetPresetPost("drive"));
 
     if (cameras.loading || sensors.loading || !cameras.data || !sensors.data) return <Loader/>
 

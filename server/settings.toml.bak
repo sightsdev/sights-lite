@@ -74,11 +74,6 @@ quality = 80
     type = "sgp30"
     enabled = true
     mock = true
-    
-    [sensors.gas2]
-    type = "sgp30"
-    enabled = true
-    mock = true
 
     [sensors.thermal_camera]
     type = "mlx90640"

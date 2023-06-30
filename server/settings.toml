@@ -15,34 +15,39 @@ enabled = false
 enabled = false
 
     [arm.servos.SHOULDER]
-    index = 0
+    index = 15
     range_min = 900
-    range_max = 2218
+    range_max = 2150
     home = 180
+    presets = { drive = 147.6, dext = 76 }
 
     [arm.servos.ELBOW]
-    index = 1
+    index = 14
     range_min = 900
-    range_max = 2355
-    home = 160
+    range_max = 2340
+    home = 0
+    presets = { drive = 77.4, dext = 52 }
 
     [arm.servos.WRISTUD]
-    index = 2
+    index = 11
     range_min = 550
     range_max = 2370
-    home = 100
+    home = 80
+    presets = { drive = 180, dext = 4 }
 
     [arm.servos.WRISTLR]
-    index = 3
+    index = 10
     range_min = 350
     range_max = 2450
-    home = 76
+    home = 90
+    presets = { drive = 138.8, dext = 82 }
 
     [arm.servos.CLAW]
-    index = 4
-    range_min = 350
+    index = 9
+    range_min = 500
     range_max = 2450
-    home = 20
+    home = 0
+    presets = { drive = 0, dext = 20 }
 
 [camera]
 width = 640
@@ -78,5 +83,5 @@ quality = 80
     [sensors.thermal_camera]
     type = "mlx90640"
     enabled = true
-    interpolate = true
+    interpolate = false
     mock = true

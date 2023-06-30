@@ -8,6 +8,7 @@ Numeric Keypad Controls:
             +/- > CLAW OPEN/CLOSE
             0 > Home Device
 '''
+import asyncio
 import logging
 from typing import Optional
 
@@ -39,21 +40,25 @@ class Arm:
         self.CURRENT_ANGLES = {j.index: j.home for j in self.config.servos.values()}
         self.home()
 
-    def home(self):
+    async def home(self):
         if not self.enabled:
             return
-        for servo in self.config.servos.values():
+        for name, servo in self.config.servos.items():
             self.kit.servo[servo.index].angle = servo.home
             self.CURRENT_ANGLES[servo.index] = servo.home
+            if name == "WRISTLR" or name == "WRISTUD":
+                await asyncio.sleep(0.25)
 
-    def move_preset(self, preset_name: str):
+    async def move_preset(self, preset_name: str):
         if not self.enabled:
             return
-        for servo in self.config.servos.values():
+        for name, servo in self.config.servos.items():
             if preset_name not in servo.presets:
                 continue
             self.kit.servo[servo.index].angle = servo.presets[preset_name]
             self.CURRENT_ANGLES[servo.index] = servo.presets[preset_name]
+            if name == "ELBOW":
+                await asyncio.sleep(0.25)
 
     def increment_angle(self, joint: str, direction: bool, amount: float = 180/100):
         if not self.enabled:

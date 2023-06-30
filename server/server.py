@@ -151,7 +151,11 @@ async def arm_move(servo_name: str, params: MoveArmServoParams):
 
 @api.post("/arm/home")
 async def arm_home():
-    app.state.arm.home()
+    await app.state.arm.home()
+
+@api.post("/arm/preset/{preset}")
+async def arm_home(preset: str):
+    await app.state.arm.move_preset(preset)
 
 @api.post("/poweroff")
 async def power():

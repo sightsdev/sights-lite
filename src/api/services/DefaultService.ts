@@ -140,6 +140,27 @@ export class DefaultService {
     }
 
     /**
+     * Arm Home
+     * @param preset
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public armHomeArmPresetPresetPost(
+        preset: string,
+    ): CancelablePromise<any> {
+        return this.httpRequest.request({
+            method: 'POST',
+            url: '/arm/preset/{preset}',
+            path: {
+                'preset': preset,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
      * Power
      * @returns any Successful Response
      * @throws ApiError
