@@ -26,10 +26,10 @@ function Index() {
 
     useHotkeys('num1', () => client.default.armMoveArmServoServoNamePost("SHOULDER", {direction: true}));
     useHotkeys('num4', () => client.default.armMoveArmServoServoNamePost("SHOULDER", {direction: false}));
-    useHotkeys('num2', () => client.default.armMoveArmServoServoNamePost("ELBOW", {direction: true}));
-    useHotkeys('num5', () => client.default.armMoveArmServoServoNamePost("ELBOW", {direction: false}));
-    useHotkeys('num3', () => client.default.armMoveArmServoServoNamePost("WRISTUD", {direction: true}));
-    useHotkeys('num6', () => client.default.armMoveArmServoServoNamePost("WRISTUD", {direction: false}));
+    useHotkeys('num2', () => client.default.armMoveArmServoServoNamePost("ELBOW", {direction: false}));
+    useHotkeys('num5', () => client.default.armMoveArmServoServoNamePost("ELBOW", {direction: true}));
+    useHotkeys('num3', () => client.default.armMoveArmServoServoNamePost("WRISTUD", {direction: false}));
+    useHotkeys('num6', () => client.default.armMoveArmServoServoNamePost("WRISTUD", {direction: true}));
     useHotkeys('num7', () => client.default.armMoveArmServoServoNamePost("WRISTLR", {direction: true}));
     useHotkeys('num8', () => client.default.armMoveArmServoServoNamePost("WRISTLR", {direction: false}));
 
