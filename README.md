@@ -34,6 +34,56 @@ uvicorn server:app --reload --host 127.0.0.1 --port 8000
 
 - **Config**: Edit `server/settings.toml` to enable/disable components (drive, arm, cameras, sensors). Changes can be hot‑reloaded via `POST /api/reload` or by restarting the server.
 
+#### Configuration: `server/settings.toml`
+
+The backend loads all hardware, cameras, and sensors from `server/settings.toml` at startup. A minimal, hardware‑free setup is recommended for first run:
+
+```toml
+[drive]
+enabled = false  # use DummyConnection (no serial required)
+
+[arm]
+enabled = false  # skip ServoKit initialisation
+
+[camera]
+width = 640
+height = 480
+framerate = 30
+quality = 80
+
+  [camera.devices]
+  # Leave empty if you don't have a local webcam
+  # front = 0
+
+[sensors]
+  [sensors.system_info]
+  type = "system_info"
+  enabled = true
+
+  [sensors.random]
+  type = "random"
+  enabled = true
+  minimum = 10
+  maximum = 20
+
+  [sensors.gas]
+  type = "sgp30"
+  enabled = true
+  mock = true       # generate data without hardware
+
+  [sensors.thermal_camera]
+  type = "mlx90640"
+  enabled = true
+  interpolate = false
+  mock = true       # generate data without hardware
+```
+
+Tips:
+- If you have a webcam, discover indices via `GET /api/camera/all` and set them under `[camera.devices]` (e.g. `front = 0`).
+- Keep `drive.enabled = false` and `arm.enabled = false` until real hardware is connected.
+- Many sensors support `mock = true` for no‑hardware testing (e.g. `sgp30`, `mlx90640`, `mlx90641`).
+- After editing, call `POST /api/reload` to apply changes without restarting.
+
 #### Frontend (React)
 
 ```bash
